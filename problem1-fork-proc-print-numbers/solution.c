@@ -18,8 +18,37 @@ int main(int argc, char *argv[]) {
 
     int n = atoi(argv[1]);
 
-    // TODO: создайте цепочку из N процессов (каждый не более чем с одним потомком).
-    //       Каждый процесс выводит одно число. Порядок вывода должен быть 1 2 3 ... N.
+    if (n <= 0) {
+        return 1;
+    }
+
+    for (int i = 1; i <= n; i++) {
+        printf("%d", i);
+
+        if (i == n) {
+            printf("\n");
+        } else {
+            printf(" ");
+        }
+
+        fflush(stdout);
+
+        if (i == n) {
+            break;
+        }
+
+        pid_t pid = fork();
+
+        if (pid < 0) {
+            perror("fork");
+            return 1;
+        }
+
+        if (pid > 0) {
+            waitpid(pid, NULL, 0);
+            break;
+        }
+    }
 
     return 0;
 }
