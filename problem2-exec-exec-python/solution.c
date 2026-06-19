@@ -8,10 +8,19 @@
 // Использовать дополнительные процессы запрещено — нужно использовать exec.
 
 int main(void) {
-    // TODO: прочитайте выражение из stdin,
-    //       затем вызовите execvp/execlp для запуска python3,
-    //       который вычислит и выведет результат.
-    //       Подсказка: python3 -c "print(<выражение>)"
+    char expr[4096];
 
-    return 0;
+    if (fgets(expr, sizeof(expr), stdin) == NULL) {
+        return 1;
+    }
+
+    expr[strcspn(expr, "\n")] = '\0';
+
+    char code[8192];
+    snprintf(code, sizeof(code), "print(%s)", expr);
+
+    execlp("python3", "python3", "-c", code, NULL);
+
+    perror("execlp");
+    return 1;
 }
